@@ -1,2 +1,6 @@
 idaffiliation,affiliation_name,affiliation_intensity,affiliation_capture
-1,Local Business Association,5,2023-01-01
+1,Democratic,5,2023-01-01
+2,Conservative,4,2023-01-02
+3,Green Party,3,2023-01-03
+4,Wonder Wharf Appreciation Society,4,2023-01-04
+5,unknown,,2023-01-05

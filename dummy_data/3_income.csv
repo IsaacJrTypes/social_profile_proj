@@ -1,3 +1,6 @@
 idincome,income_level,income_desc
-1,Middle,Owner's income from the restaurant.
-2,Low,Part-time income.
+1,Low,Barely makes ends meet
+2,Medium,Average income
+3,High,Above average income
+4,Very High,Well above average income
+5,No Income,Dependent or unemployed

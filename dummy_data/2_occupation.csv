@@ -1,3 +1,6 @@
 idoccupation,occ_name,occ_desc
-1,Restaurant Owner,Runs Bob's Burgers.
-2,Waitstaff,Helps at Bob's Burgers.
+1,Restaurant Owner,Owns a burger restaurant
+2,Student,Attending school
+3,Chef,Works in a restaurant kitchen
+4,Retail Worker,Works at a retail store
+5,Accountant,Manages financial records

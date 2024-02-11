@@ -1,2 +1,6 @@
 ideducation,edu_level,edu_desc,alma_mater
-1,High School,High School Diploma,Local High School
+1,High School,Completed High School,Local High School
+2,College,Completed College,State College
+3,Middle School,Completed Middle School,Local Middle School
+4,Elementary,Completed Elementary,Local Elementary School
+5,Graduate School,Completed Graduate School,University
