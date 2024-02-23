@@ -32,6 +32,20 @@ ENGINE = InnoDB;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
+-- Table `user_profile_db`.`genderLookup`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `user_profile_db`.`genderLookup` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `user_profile_db`.`genderLookup` (
+  `idgenderLookup` INT NOT NULL AUTO_INCREMENT,
+  `gender_name` VARCHAR(45) NULL,
+  PRIMARY KEY (`idgenderLookup`))
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
 -- Table `user_profile_db`.`user`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `user_profile_db`.`user` ;
@@ -41,14 +55,20 @@ CREATE TABLE IF NOT EXISTS `user_profile_db`.`user` (
   `iduser` INT NOT NULL AUTO_INCREMENT,
   `f_name` VARCHAR(45) NULL,
   `l_name` VARCHAR(45) NULL,
-  `gender` VARCHAR(45) NULL,
   `DOB` VARCHAR(45) NULL,
   `homeStatus_idhomeStatus` INT NOT NULL,
+  `genderLookup_idgenderLookup` INT NOT NULL,
   PRIMARY KEY (`iduser`),
   INDEX `fk_user_homeStatus1_idx` (`homeStatus_idhomeStatus` ASC) VISIBLE,
+  INDEX `fk_user_genderLookup1_idx` (`genderLookup_idgenderLookup` ASC) VISIBLE,
   CONSTRAINT `fk_user_homeStatus1`
     FOREIGN KEY (`homeStatus_idhomeStatus`)
     REFERENCES `user_profile_db`.`homeStatus` (`idhomeStatus`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_user_genderLookup1`
+    FOREIGN KEY (`genderLookup_idgenderLookup`)
+    REFERENCES `user_profile_db`.`genderLookup` (`idgenderLookup`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -102,6 +122,36 @@ ENGINE = InnoDB;
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
+-- Table `user_profile_db`.`affiliationLookup`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `user_profile_db`.`affiliationLookup` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `user_profile_db`.`affiliationLookup` (
+  `idaffiliationLookup` INT NOT NULL AUTO_INCREMENT,
+  `affiliation_name` VARCHAR(45) NULL,
+  `affiliation_desc` TEXT NULL,
+  PRIMARY KEY (`idaffiliationLookup`))
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `user_profile_db`.`intensityLookup`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `user_profile_db`.`intensityLookup` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `user_profile_db`.`intensityLookup` (
+  `idintensityLookup` INT NOT NULL,
+  `intesity_name` VARCHAR(45) NULL,
+  `intensity_desc` VARCHAR(45) NULL,
+  PRIMARY KEY (`idintensityLookup`))
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
 -- Table `user_profile_db`.`affiliation`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `user_profile_db`.`affiliation` ;
@@ -109,10 +159,37 @@ DROP TABLE IF EXISTS `user_profile_db`.`affiliation` ;
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `user_profile_db`.`affiliation` (
   `idaffiliation` INT NOT NULL,
-  `affiliation_name` VARCHAR(45) NULL,
-  `affiliation_intensity` INT NULL,
   `affiliation_capture` DATETIME NULL,
-  PRIMARY KEY (`idaffiliation`))
+  `affiliationLookup_idaffiliationLookup` INT NOT NULL,
+  `intensityLookup_idintensityLookup` INT NOT NULL,
+  PRIMARY KEY (`idaffiliation`),
+  INDEX `fk_affiliation_affiliationLookup1_idx` (`affiliationLookup_idaffiliationLookup` ASC) VISIBLE,
+  INDEX `fk_affiliation_intensityLookup1_idx` (`intensityLookup_idintensityLookup` ASC) VISIBLE,
+  CONSTRAINT `fk_affiliation_affiliationLookup1`
+    FOREIGN KEY (`affiliationLookup_idaffiliationLookup`)
+    REFERENCES `user_profile_db`.`affiliationLookup` (`idaffiliationLookup`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_affiliation_intensityLookup1`
+    FOREIGN KEY (`intensityLookup_idintensityLookup`)
+    REFERENCES `user_profile_db`.`intensityLookup` (`idintensityLookup`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `user_profile_db`.`viewLookup`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `user_profile_db`.`viewLookup` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `user_profile_db`.`viewLookup` (
+  `idviewLookup` INT NOT NULL AUTO_INCREMENT,
+  `view_name` VARCHAR(45) NULL,
+  `view_desc` TEXT NULL,
+  PRIMARY KEY (`idviewLookup`))
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -125,10 +202,22 @@ DROP TABLE IF EXISTS `user_profile_db`.`socialView` ;
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `user_profile_db`.`socialView` (
   `idsocialView` INT NOT NULL AUTO_INCREMENT,
-  `view_name` VARCHAR(45) NULL,
-  `view_intensity` INT NULL,
   `view_capture` DATETIME NULL,
-  PRIMARY KEY (`idsocialView`))
+  `viewLookup_idviewLookup` INT NOT NULL,
+  `intensityLookup_idintensityLookup` INT NOT NULL,
+  PRIMARY KEY (`idsocialView`),
+  INDEX `fk_socialView_viewLookup1_idx` (`viewLookup_idviewLookup` ASC) VISIBLE,
+  INDEX `fk_socialView_intensityLookup1_idx` (`intensityLookup_idintensityLookup` ASC) VISIBLE,
+  CONSTRAINT `fk_socialView_viewLookup1`
+    FOREIGN KEY (`viewLookup_idviewLookup`)
+    REFERENCES `user_profile_db`.`viewLookup` (`idviewLookup`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_socialView_intensityLookup1`
+    FOREIGN KEY (`intensityLookup_idintensityLookup`)
+    REFERENCES `user_profile_db`.`intensityLookup` (`idintensityLookup`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -274,13 +363,13 @@ CREATE TABLE IF NOT EXISTS `user_profile_db`.`userAddress` (
   CONSTRAINT `fk_userAddress_address1`
     FOREIGN KEY (`address_idaddress`)
     REFERENCES `user_profile_db`.`address` (`idaddress`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_userAddress_user1`
     FOREIGN KEY (`user_iduser`)
     REFERENCES `user_profile_db`.`user` (`iduser`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -295,6 +384,7 @@ CREATE TABLE IF NOT EXISTS `user_profile_db`.`socialMedia` (
   `idsocialMedia` INT NOT NULL,
   `platform` VARCHAR(45) NULL,
   `handle` VARCHAR(100) NULL,
+  `SMID` VARCHAR(255) NOT NULL,
   `user_iduser` INT NOT NULL,
   PRIMARY KEY (`idsocialMedia`),
   INDEX `fk_socialMedia_user1_idx` (`user_iduser` ASC) VISIBLE,
@@ -363,13 +453,13 @@ CREATE TABLE IF NOT EXISTS `user_profile_db`.`purchaseHistory` (
   CONSTRAINT `fk_purchaseHistory_user1`
     FOREIGN KEY (`user_iduser`)
     REFERENCES `user_profile_db`.`user` (`iduser`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_purchaseHistory_purchasePlatform1`
     FOREIGN KEY (`purchasePlatform_idpurchasePlatform`)
     REFERENCES `user_profile_db`.`purchasePlatform` (`idpurchasePlatform`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = ascii;
 
@@ -435,8 +525,8 @@ CREATE TABLE IF NOT EXISTS `user_profile_db`.`persona` (
   CONSTRAINT `fk_persona_user1`
     FOREIGN KEY (`user_iduser`)
     REFERENCES `user_profile_db`.`user` (`iduser`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -479,8 +569,8 @@ CREATE TABLE IF NOT EXISTS `user_profile_db`.`userCategory` (
   CONSTRAINT `fk_userCategory_category1`
     FOREIGN KEY (`category_idcategory`)
     REFERENCES `user_profile_db`.`category` (`idcategory`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -531,8 +621,8 @@ CREATE TABLE IF NOT EXISTS `user_profile_db`.`posts` (
   CONSTRAINT `fk_posts_socialMedia1`
     FOREIGN KEY (`socialMedia_idsocialMedia`)
     REFERENCES `user_profile_db`.`socialMedia` (`idsocialMedia`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -670,8 +760,8 @@ CREATE TABLE IF NOT EXISTS `user_profile_db`.`contract` (
   CONSTRAINT `fk_contract_marketingAgency1`
     FOREIGN KEY (`marketingAgency_idagency`)
     REFERENCES `user_profile_db`.`marketingAgency` (`idagency`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -693,6 +783,71 @@ CREATE TABLE IF NOT EXISTS `user_profile_db`.`dataSale` (
   CONSTRAINT `fk_dataSale_contract1`
     FOREIGN KEY (`contract_idcontract`)
     REFERENCES `user_profile_db`.`contract` (`idcontract`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `user_profile_db`.`transactionLog`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `user_profile_db`.`transactionLog` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `user_profile_db`.`transactionLog` (
+  `idtransactionLog` INT NOT NULL AUTO_INCREMENT,
+  `transaction_type` VARCHAR(255) NOT NULL,
+  `transaction_status` VARCHAR(45) NULL,
+  `transaction_date` DATETIME NOT NULL,
+  `transaction_desc` TEXT NULL,
+  PRIMARY KEY (`idtransactionLog`))
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `user_profile_db`.`transactionDetail`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `user_profile_db`.`transactionDetail` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `user_profile_db`.`transactionDetail` (
+  `idtransactionDetail` INT NOT NULL AUTO_INCREMENT,
+  `transactionLog_idtransactionLog` INT NOT NULL,
+  `entity_type` VARCHAR(45) NOT NULL,
+  `entity_id` INT NOT NULL,
+  `before_value` TEXT NULL,
+  `after_value` TEXT NULL,
+  `detail_date` DATETIME NOT NULL,
+  PRIMARY KEY (`idtransactionDetail`),
+  INDEX `fk_transactionDetail_transactionLog1_idx` (`transactionLog_idtransactionLog` ASC) VISIBLE,
+  CONSTRAINT `fk_transactionDetail_transactionLog1`
+    FOREIGN KEY (`transactionLog_idtransactionLog`)
+    REFERENCES `user_profile_db`.`transactionLog` (`idtransactionLog`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `user_profile_db`.`userOpinions`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `user_profile_db`.`userOpinions` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `user_profile_db`.`userOpinions` (
+  `iduserOpinions` INT NOT NULL AUTO_INCREMENT,
+  `opinion_subject` VARCHAR(255) NULL,
+  `opinion_value` VARCHAR(255) NULL,
+  `opinion_capture` DATETIME NULL,
+  `user_iduser` INT NOT NULL,
+  PRIMARY KEY (`iduserOpinions`),
+  INDEX `fk_userOpinions_user1_idx` (`user_iduser` ASC) VISIBLE,
+  CONSTRAINT `fk_userOpinions_user1`
+    FOREIGN KEY (`user_iduser`)
+    REFERENCES `user_profile_db`.`user` (`iduser`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
