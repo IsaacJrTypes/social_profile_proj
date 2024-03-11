@@ -786,6 +786,28 @@ ENGINE = InnoDB;
 
 SHOW WARNINGS;
 
+-- -----------------------------------------------------
+-- Table `user_profile_db`.`metaData`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `user_profile_db`.`metaData` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `user_profile_db`.`metaData` (
+  `idmetaData` INT NOT NULL AUTO_INCREMENT,
+  `type` VARCHAR(45) NULL,
+  `data` JSON NULL,
+  `personalData_idpersonalData` INT NOT NULL,
+  PRIMARY KEY (`idmetaData`),
+  INDEX `fk_metaData_personalData1_idx` (`personalData_idpersonalData` ASC) VISIBLE,
+  CONSTRAINT `fk_metaData_personalData1`
+    FOREIGN KEY (`personalData_idpersonalData`)
+    REFERENCES `user_profile_db`.`personalData` (`idpersonalData`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
